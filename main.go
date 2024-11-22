@@ -8,8 +8,8 @@ import (
 
 func main() {
 	startTime := time.Now()
-	runner := typeAnalyzer.NewRunner("C:/Users/zeroy/Documents/Code/VarTypesGo/examples/case2/...")
-	runner.Dir = "C:/Users/zeroy/Documents/Code/VarTypesGo/examples/case2/"
+	runner := typeAnalyzer.NewRunner("/Users/zeroy/Documents/Code/VarTypesGo/examples/case2/...")
+	runner.Dir = "/Users/zeroy/Documents/Code/VarTypesGo/examples/case2/"
 	runner.ExportToSSA = true
 	err := runner.Run()
 	endTime := time.Now()
