@@ -5,10 +5,9 @@ type Node struct {
 }
 
 func main() {
-	var a, b, c Node
-	a.Value = 1
-	b.Value = true
-	c.Value = "hello"
+	a := Node{Value: 1}
+	b := Node{Value: true}
+	c := Node{Value: "hello"}
 	_ = a.Value.(int)
 	_ = b.Value.(bool)
 	_ = c.Value.(string)
