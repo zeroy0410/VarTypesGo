@@ -1,0 +1,69 @@
+package case1:
+  func  init       func()
+  var   init$guard bool
+  func  main       func()
+
+# Name: case1.init
+# Package: case1
+# Synthetic: package initializer
+func init():
+0:                                                                entry P:0 S:2
+	t0 = *init$guard                                                   bool
+	if t0 goto 2 else 1
+1:                                                           init.start P:1 S:1
+	*init$guard = true:bool
+	jump 2
+2:                                                            init.done P:2 S:0
+	return
+
+# Name: case1.main
+# Package: case1
+# Location: C:\Users\zeroy\Documents\Code\VarTypesGo\examples\case1\main.go:5:6
+func main():
+0:                                                                entry P:0 S:0
+	t0 = make interface{} <- bool (true:bool)                   interface{}
+	t1 = make interface{} <- int (1:int)                        interface{}
+	t2 = make interface{} <- string ("hello":string)            interface{}
+	t3 = main$4(t0)                                             interface{}
+	t4 = main$4(t1)                                             interface{}
+	t5 = main$4(t2)                                             interface{}
+	t6 = main$1(t3)                                                    bool
+	t7 = main$2(t4)                                                     int
+	t8 = main$3(t5)                                                  string
+	return
+
+# Name: case1.main$1
+# Package: case1
+# Location: C:\Users\zeroy\Documents\Code\VarTypesGo\examples\case1\main.go:6:17
+# Parent: main
+func main$1(i interface{}) bool:
+0:                                                                entry P:0 S:0
+	t0 = typeassert i.(bool)                                           bool
+	return t0
+
+# Name: case1.main$2
+# Package: case1
+# Location: C:\Users\zeroy\Documents\Code\VarTypesGo\examples\case1\main.go:10:16
+# Parent: main
+func main$2(i interface{}) int:
+0:                                                                entry P:0 S:0
+	t0 = typeassert i.(int)                                             int
+	return t0
+
+# Name: case1.main$3
+# Package: case1
+# Location: C:\Users\zeroy\Documents\Code\VarTypesGo\examples\case1\main.go:14:19
+# Parent: main
+func main$3(i interface{}) string:
+0:                                                                entry P:0 S:0
+	t0 = typeassert i.(string)                                       string
+	return t0
+
+# Name: case1.main$4
+# Package: case1
+# Location: C:\Users\zeroy\Documents\Code\VarTypesGo\examples\case1\main.go:20:13
+# Parent: main
+func main$4(i interface{}) interface{}:
+0:                                                                entry P:0 S:0
+	return i
+

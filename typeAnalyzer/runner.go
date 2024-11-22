@@ -3,12 +3,25 @@ package typeAnalyzer
 import (
 	"fmt"
 	"go/types"
-	"golang.org/x/tools/go/callgraph/vta"
+	"golang.org/x/tools/go/callgraph/vtafs"
 	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/ssa/ssautil"
+	"os"
 	"strings"
 )
+
+func printFunction(fn *ssa.Function, file *os.File) {
+	_, err := fn.WriteTo(file)
+	if err != nil {
+		fmt.Println("Error writing function to stdout:", err)
+	}
+
+	// 递归打印嵌套的匿名函数和闭包
+	for _, anonFn := range fn.AnonFuncs {
+		printFunction(anonFn, file)
+	}
+}
 
 func getTypes(t types.Type) (types.Type, string) {
 	switch tt := t.(type) {
@@ -84,15 +97,16 @@ func PrintAssertionsInfo(resultTypes map[*ssa.TypeAssert][]types.Type) {
 
 // Runner represents a analysis runner
 type Runner struct {
-	ModuleName string
-	PkgPath    []string
-	Debug      bool
-	Dir        string
+	ModuleName  string
+	PkgPath     []string
+	Debug       bool
+	Dir         string
+	ExportToSSA bool
 }
 
 func NewRunner(PkgPath ...string) *Runner {
 	return &Runner{PkgPath: PkgPath, ModuleName: "",
-		Debug: false}
+		Debug: false, ExportToSSA: false}
 }
 
 func (r *Runner) Run() error {
@@ -116,6 +130,34 @@ func (r *Runner) Run() error {
 
 	prog.Build()
 
+	if r.ExportToSSA {
+		file, err := os.Create("ssa.txt")
+		if err != nil {
+			fmt.Println("Error creating file:", err)
+		}
+		defer func(file *os.File) {
+			err := file.Close()
+			if err != nil {
+				fmt.Println("Error closing file:", err)
+			}
+		}(file)
+		for _, pkg := range prog.AllPackages() {
+			if pkg == nil || pkg.Pkg == nil {
+				continue
+			}
+			_, err := pkg.WriteTo(file)
+			if err != nil {
+				fmt.Println("Error writing file:", err)
+			}
+			// 递归打印函数及其闭包
+			for _, mem := range pkg.Members {
+				if fn, ok := mem.(*ssa.Function); ok {
+					printFunction(fn, file)
+				}
+			}
+		}
+	}
+
 	mainFuncs := make([]*ssa.Function, 0)
 	for _, pkg := range initial {
 		mainPkg := prog.Package(pkg.Types)
@@ -127,8 +169,7 @@ func (r *Runner) Run() error {
 		return new(NoMainPkgError)
 	}
 
-	vta.CallGraph(ssautil.AllFunctions(prog), nil)
-	resultTypes := vta.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
+	resultTypes := vtafs.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
 	PrintAssertionsInfo(resultTypes)
 
 	return nil
