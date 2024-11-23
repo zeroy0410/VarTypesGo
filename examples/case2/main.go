@@ -1,3 +1,5 @@
+//支持域敏感但不支持域敏感嵌套
+
 package main
 
 type No struct {
