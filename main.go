@@ -8,10 +8,10 @@ import (
 
 func main() {
 	startTime := time.Now()
-	runner := typeAnalyzer.NewRunner("C:/Users/zeroy/Documents/Code/VarTypesGo/examples/case1/...")
-	runner.Dir = "C:/Users/zeroy/Documents/Code/VarTypesGo/examples/case1/"
+	runner := typeAnalyzer.NewRunner("C:/Users/zeroy/Documents/Code/go-tools/...")
+	runner.Dir = "C:/Users/zeroy/Documents/Code/go-tools/"
 	runner.ExportToSSA = true
-	runner.AnalyzerName = "kcfa"
+	runner.AnalyzerName = "vtafs"
 	err := runner.Run()
 	endTime := time.Now()
 	executionTime := endTime.Sub(startTime)

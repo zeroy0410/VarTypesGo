@@ -182,7 +182,8 @@ func (r *Runner) Run() error {
 	default:
 		resultTypes = vta.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
 	}
-	PrintAssertionsInfo(resultTypes)
+	//PrintAssertionsInfo(resultTypes)
+	_ = resultTypes
 
 	return nil
 }
