@@ -3,24 +3,23 @@
 
 package main
 
+func processBool(i interface{}) bool {
+	return i.(bool) // type assertion
+}
+func processint(i interface{}) int {
+	return i.(int) // type assertion
+}
+func processString(i interface{}) string {
+	return i.(string) // type assertion
+}
+func process(i interface{}) interface{} {
+	return i
+}
+
 func main() {
-	processBool := func(i interface{}) bool {
-		return i.(bool) // type assertion
-	}
-
-	processint := func(i interface{}) int {
-		return i.(int) // type assertion
-	}
-
-	processString := func(i interface{}) string {
-		return i.(string) // type assertion
-	}
 	var boolInterface interface{} = true
 	var intInterface interface{} = 1
 	var stringInterface interface{} = "hello"
-	process := func(i interface{}) interface{} {
-		return i
-	}
 	boolInterface = process(boolInterface)
 	intInterface = process(intInterface)
 	stringInterface = process(stringInterface)

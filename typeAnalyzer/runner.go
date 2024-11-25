@@ -3,6 +3,8 @@ package typeAnalyzer
 import (
 	"fmt"
 	"go/types"
+	"golang.org/x/tools/go/callgraph/kcfa"
+	"golang.org/x/tools/go/callgraph/vta"
 	"golang.org/x/tools/go/callgraph/vtafs"
 	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/go/ssa"
@@ -97,11 +99,12 @@ func PrintAssertionsInfo(resultTypes map[*ssa.TypeAssert][]types.Type) {
 
 // Runner represents a analysis runner
 type Runner struct {
-	ModuleName  string
-	PkgPath     []string
-	Debug       bool
-	Dir         string
-	ExportToSSA bool
+	ModuleName   string
+	PkgPath      []string
+	Debug        bool
+	Dir          string
+	ExportToSSA  bool
+	AnalyzerName string
 }
 
 func NewRunner(PkgPath ...string) *Runner {
@@ -168,8 +171,17 @@ func (r *Runner) Run() error {
 	if len(mainFuncs) == 0 {
 		return new(NoMainPkgError)
 	}
-
-	resultTypes := vtafs.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
+	var resultTypes map[*ssa.TypeAssert][]types.Type
+	switch r.AnalyzerName {
+	case "vtafs":
+		resultTypes = vtafs.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
+	case "vta":
+		resultTypes = vta.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
+	case "kcfa":
+		resultTypes = kcfa.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
+	default:
+		resultTypes = vta.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
+	}
 	PrintAssertionsInfo(resultTypes)
 
 	return nil
