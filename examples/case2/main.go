@@ -18,14 +18,4 @@ func main() {
 	_ = b.Value.(bool)
 	c := Node{Value: "hello", Noo: No{}}
 	_ = c.Value.(string)
-
-	aa := a.Noo
-	aa.Value = "haha"
-	_ = aa.Value.(string)
-	bb := b.Noo
-	bb.Value = 2
-	_ = bb.Value.(int)
-	cc := c.Noo
-	cc.Value = false
-	_ = cc.Value.(bool)
 }

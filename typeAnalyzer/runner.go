@@ -11,6 +11,7 @@ import (
 	"golang.org/x/tools/go/ssa/ssautil"
 	"os"
 	"strings"
+	"time"
 )
 
 func printFunction(fn *ssa.Function, file *os.File) {
@@ -161,16 +162,17 @@ func (r *Runner) Run() error {
 		}
 	}
 
-	mainFuncs := make([]*ssa.Function, 0)
-	for _, pkg := range initial {
-		mainPkg := prog.Package(pkg.Types)
-		if mainPkg != nil && mainPkg.Pkg.Name() == "main" && mainPkg.Func("main") != nil {
-			mainFuncs = append(mainFuncs, mainPkg.Func("main"))
-		}
-	}
-	if len(mainFuncs) == 0 {
-		return new(NoMainPkgError)
-	}
+	//mainFuncs := make([]*ssa.Function, 0)
+	//for _, pkg := range initial {
+	//	mainPkg := prog.Package(pkg.Types)
+	//	if mainPkg != nil && mainPkg.Pkg.Name() == "main" && mainPkg.Func("main") != nil {
+	//		mainFuncs = append(mainFuncs, mainPkg.Func("main"))
+	//	}
+	//}
+	//if len(mainFuncs) == 0 {
+	//	return new(NoMainPkgError)
+	//}
+	startTime := time.Now()
 	var resultTypes map[*ssa.TypeAssert][]types.Type
 	switch r.AnalyzerName {
 	case "vtafs":
@@ -185,8 +187,10 @@ func (r *Runner) Run() error {
 	default:
 		resultTypes = vta.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
 	}
-	PrintAssertionsInfo(resultTypes)
+	//PrintAssertionsInfo(resultTypes)
 	_ = resultTypes
-
+	endTime := time.Now()
+	executionTime := endTime.Sub(startTime)
+	fmt.Printf("Time： %s\n", executionTime)
 	return nil
 }
