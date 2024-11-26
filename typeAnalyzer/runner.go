@@ -174,15 +174,18 @@ func (r *Runner) Run() error {
 	var resultTypes map[*ssa.TypeAssert][]types.Type
 	switch r.AnalyzerName {
 	case "vtafs":
+		_ = vtafs.CallGraph(ssautil.AllFunctions(prog), nil)
 		resultTypes = vtafs.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
 	case "vta":
+		_ = vta.CallGraph(ssautil.AllFunctions(prog), nil)
 		resultTypes = vta.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
 	case "kcfa":
+		_ = kcfa.CallGraph(ssautil.AllFunctions(prog), nil)
 		resultTypes = kcfa.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
 	default:
 		resultTypes = vta.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
 	}
-	//PrintAssertionsInfo(resultTypes)
+	PrintAssertionsInfo(resultTypes)
 	_ = resultTypes
 
 	return nil
