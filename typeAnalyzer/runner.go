@@ -114,6 +114,7 @@ func NewRunner(PkgPath ...string) *Runner {
 }
 
 func (r *Runner) Run() error {
+	// 初始化分析，Load Packages（依赖编译器前端，只能分析能通过编译的代码）
 	mode := packages.NeedName |
 		packages.NeedFiles |
 		packages.NeedCompiledGoFiles |
@@ -132,7 +133,7 @@ func (r *Runner) Run() error {
 
 	prog, _ := ssautil.AllPackages(initial, 0)
 
-	prog.Build()
+	prog.Build() // 构建 SSA中间表示
 
 	if r.ExportToSSA {
 		file, err := os.Create("ssa.txt")
@@ -179,7 +180,7 @@ func (r *Runner) Run() error {
 		_ = vtafs.CallGraph(ssautil.AllFunctions(prog), nil)
 		resultTypes = vtafs.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
 	case "vta":
-		_ = vta.CallGraph(ssautil.AllFunctions(prog), nil)
+		//_ = vta.CallGraph(ssautil.AllFunctions(prog), nil)
 		resultTypes = vta.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
 	case "kcfa":
 		_ = kcfa.CallGraph(ssautil.AllFunctions(prog), nil)
@@ -187,7 +188,7 @@ func (r *Runner) Run() error {
 	default:
 		resultTypes = vta.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
 	}
-	//PrintAssertionsInfo(resultTypes)
+	PrintAssertionsInfo(resultTypes)
 	_ = resultTypes
 	endTime := time.Now()
 	executionTime := endTime.Sub(startTime)

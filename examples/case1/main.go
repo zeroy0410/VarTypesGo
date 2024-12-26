@@ -3,6 +3,8 @@
 
 package main
 
+import "fmt"
+
 func processBool(i interface{}) bool {
 	return i.(bool) // type assertion
 }
@@ -17,6 +19,7 @@ func process(i interface{}) interface{} {
 }
 
 func main() {
+	fmt.Println("Hello, world!")
 	var boolInterface interface{} = true
 	var intInterface interface{} = 1
 	var stringInterface interface{} = "hello"
@@ -26,4 +29,20 @@ func main() {
 	processBool(boolInterface)
 	processint(intInterface)
 	processString(stringInterface)
+
+	type No struct {
+		Value interface{}
+	}
+
+	type Node struct {
+		Value interface{}
+		Noo   No
+	}
+
+	a := Node{Value: 1, Noo: No{}}
+	_ = a.Value.(int)
+	b := Node{Value: true, Noo: No{}}
+	_ = b.Value.(bool)
+	c := Node{Value: "hello", Noo: No{}}
+	_ = c.Value.(string)
 }
