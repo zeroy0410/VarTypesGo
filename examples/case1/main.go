@@ -1,48 +1,58 @@
-// The example context insensitive analysis can not be solved.
-// 上下文敏感
+/**
+ * Introduction 域敏感-路径长度
+ * Level 3
+ */
+
+// evaluation information start
+// real case = true
+// evaluation item = 准确度->域敏感->接口/类->域敏感-路径长度
+// bind_url = case/accuracy/field_sensitive/interface_class/field_len_005_T/field_len_005_T.go
+// evaluation information end
 
 package main
 
-import "fmt"
-
-func processBool(i interface{}) bool {
-	return i.(bool) // type assertion
+type A struct {
+	data string
 }
-func processint(i interface{}) int {
-	return i.(int) // type assertion
+type B struct {
+	a A
 }
-func processString(i interface{}) string {
-	return i.(string) // type assertion
+type C struct {
+	b B
 }
-func process(i interface{}) interface{} {
-	return i
+type D struct {
+	c C
+}
+type E struct {
+	d D
+}
+type F struct {
+	e E
 }
 
 func main() {
-	fmt.Println("Hello, world!")
-	var boolInterface interface{} = true
-	var intInterface interface{} = 1
-	var stringInterface interface{} = "hello"
-	boolInterface = process(boolInterface)
-	intInterface = process(intInterface)
-	stringInterface = process(stringInterface)
-	processBool(boolInterface)
-	processint(intInterface)
-	processString(stringInterface)
-
-	type No struct {
-		Value interface{}
+	__taint_src := GetSensitiveData()
+	pa := A{
+		data: __taint_src,
 	}
+	var b B
+	b.a = pa
+	var c C
+	c.b = b
+	var d D
+	d.c = c
+	var e E
+	e.d = d
+	var f F
+	f.e = e
+	p := f.e.d.c
+	q := p.b.a.data
+	__taint_sink(q)
+}
 
-	type Node struct {
-		Value interface{}
-		Noo   No
-	}
+func __taint_sink(o interface{}) {
+}
 
-	a := Node{Value: 1, Noo: No{}}
-	_ = a.Value.(int)
-	b := Node{Value: true, Noo: No{}}
-	_ = b.Value.(bool)
-	c := Node{Value: "hello", Noo: No{}}
-	_ = c.Value.(string)
+func GetSensitiveData() string {
+	return "sensitive data"
 }

@@ -106,6 +106,7 @@ type Runner struct {
 	Dir          string
 	ExportToSSA  bool
 	AnalyzerName string
+	K            int
 }
 
 func NewRunner(PkgPath ...string) *Runner {
@@ -177,14 +178,14 @@ func (r *Runner) Run() error {
 	var resultTypes map[*ssa.TypeAssert][]types.Type
 	switch r.AnalyzerName {
 	case "vtafs":
-		_ = vtafs.CallGraph(ssautil.AllFunctions(prog), nil)
+		//_ = vtafs.CallGraph(ssautil.AllFunctions(prog), nil)
 		resultTypes = vtafs.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
 	case "vta":
 		//_ = vta.CallGraph(ssautil.AllFunctions(prog), nil)
 		resultTypes = vta.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
 	case "kcfa":
-		_ = kcfa.CallGraph(ssautil.AllFunctions(prog), nil)
-		resultTypes = kcfa.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
+		_ = kcfa.CallGraph(ssautil.AllFunctions(prog), nil, r.K)
+		resultTypes = kcfa.GetTypeAsserts(ssautil.AllFunctions(prog), nil, r.K)
 	default:
 		resultTypes = vta.GetTypeAsserts(ssautil.AllFunctions(prog), nil)
 	}

@@ -6,13 +6,11 @@ import (
 )
 
 func main() {
-	//runner := typeAnalyzer.NewRunner("C:\\Users\\zeroy\\Documents\\Code\\VarTypesGo\\case1\\...")
-	//runner.Dir = "C:\\Users\\zeroy\\Documents\\Code\\VarTypesGo\\examples\\case1"
-	//runner.ModuleName = "github.com/prometheus/prometheus"
-	runner := typeAnalyzer.NewRunner("C:/Users/zeroy/Documents/Code/VarTypesGo/examples/case1/...")
-	runner.Dir = "C:/Users/zeroy/Documents/Code/VarTypesGo/examples/case1"
+	runner := typeAnalyzer.NewRunner("/Users/zeroy/Documents/Code/VarTypesGo/examples/case1/...")
+	runner.Dir = "/Users/zeroy/Documents/Code/VarTypesGo/examples/case1/"
 	runner.ExportToSSA = true
-	runner.AnalyzerName = "vta"
+	runner.AnalyzerName = "vtafs"
+	runner.K = 2
 	err := runner.Run()
 	if err != nil {
 		fmt.Println(err)
